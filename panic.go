@@ -3,6 +3,7 @@ package debug
 import (
 	"fmt"
 	"os"
+	"runtime"
 )
 
 func Catch() {
@@ -10,11 +11,17 @@ func Catch() {
 		fmt.Println(err)
 	}
 }
+func CatchAndGoexit() {
+	if err := recover(); err != nil {
+		fmt.Println(err)
+		runtime.Goexit()
+	}
+}
 
 func CatchAndExit() {
 	if err := recover(); err != nil {
 		fmt.Println(err)
-		os.Exit()
+		os.Exit(0)
 	}
 }
 
@@ -22,7 +29,7 @@ func PanicError(err error) {
 	if err != nil {
 		_, file, line, ok := runtime.Caller(1)
 		if ok {
-			panic(fmt.Errorf("%s: line %d:\n%v\n",file, line, err))
+			panic(fmt.Errorf("%s: line %d:\n%v\n", file, line, err))
 		} else {
 			panic(err)
 		}
@@ -33,7 +40,7 @@ func PanicAssist(ok bool) {
 	if !ok {
 		_, file, line, ok := runtime.Caller(1)
 		if ok {
-			panic(fmt.Errorf("%s: line %d: Assist failed\n",file, line))
+			panic(fmt.Errorf("%s: line %d: Assist failed\n", file, line))
 		} else {
 			panic("Assist failed\n")
 		}
